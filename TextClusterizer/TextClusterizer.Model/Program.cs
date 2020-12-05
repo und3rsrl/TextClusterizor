@@ -12,14 +12,15 @@ namespace TextClusterizer.Model
         {
             string assetsRelativePath = @"../../../Assets";
             string assetsPath = PathHelper.GetAbsolutePath(assetsRelativePath);
-
             string articlesCsv = Path.Combine(assetsPath, "Input", "articles.csv");
             string modelPath = Path.Combine(assetsPath, "Output", "articlesClustering.zip");
 
+            //  Create ML context 
             var mlContext = new MLContext();
 
             var trainingData = mlContext.Data.LoadFromTextFile<ArticleData>(articlesCsv);
 
+            //  Preview loaded data
             var data = trainingData.Preview();
 
             var dataProcessPipeline = mlContext.Transforms.Text.NormalizeText(outputColumnName: Constants.Columns.NormalizedTextColumn, inputColumnName: Constants.Columns.ArticleTextColumn)
@@ -73,6 +74,13 @@ namespace TextClusterizer.Model
                     (
                         Constants.Columns.FeaturesColumn,
                         Constants.Columns.NormalizeLpNormColumn
+                    ))
+                .Append(mlContext.Transforms
+                    .ProjectToPrincipalComponents
+                    (
+                        outputColumnName: "PCAFeatures",
+                        inputColumnName: "Features",
+                        rank: 2
                     ));
 
             var transformedData = dataProcessPipeline.Fit(trainingData).Transform(trainingData).Preview();

@@ -15,6 +15,6 @@ namespace TextClusterizer.Model.Constants
         public const string ValueToKeyColumn = "ValueToKey";
         public const string NGramsColumn = "NGrams";
         public const string NormalizeLpNormColumn = "NormalizeLpNorm";
-        public const string FeaturesColumn = "FeaturesNorm";
+        public const string FeaturesColumn = "Features";
     }
 }
